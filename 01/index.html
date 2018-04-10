@@ -8,13 +8,32 @@
 <body>
   <div id='app'></div>
   <script>
-    const headerElement = React.createElement(
+    const name = 'Malones'
+    const handle = '@malones'
+
+    const nameElement = React.createElement(
       'h1',
-      { id: 'header' },
-      'Malones'
+      null, // no attributes
+      name
     )
+
+    const handleElement = React.createElement(
+      'h3',
+      null,
+      handle
+    )
+
+    const wrapperElement = React.createElement(
+      'div',
+      { id: 'container' },
+      nameElement,
+      handleElement
+    )
+
+    console.log('wrapperElement', wrapperElement)
+
     ReactDOM.render(
-      headerElement,
+      wrapperElement,
       document.getElementById('app')
     )
   </script>
