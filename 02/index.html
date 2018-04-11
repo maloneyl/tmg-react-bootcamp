@@ -10,44 +10,70 @@
   <div id="app"></div>
 
   <script type="text/babel">
-    function FriendsList (props) { // functional component, stateless
+    function FriendsList (props) {
       return (
         <ul>
           {props.list.map((name) => (
             <li key={name}>
               <span>{name}</span>
-              <button onClick={() => props.onRemoveFriend(name)}>
-                Remove
-              </button>
+              {props.onRemoveFriend ?
+                (
+                  <button onClick={() => props.onRemoveFriend(name)}>Remove</button>
+                ) : null
+              }
+              {props.onDeactivateFriend ?
+                (
+                  <button onClick={() => props.onDeactivateFriend(name)}>Deactivate</button>
+                ) : null
+              }
+              {props.onReactivateFriend ?
+                (
+                  <button onClick={() => props.onReactivateFriend(name)}>Reactivate</button>
+                ) : null
+              }
             </li>
           ))}
         </ul>
       )
     }
 
-    class App extends React.Component { // class component, so you can have state (local)
+    class App extends React.Component {
       constructor(props) {
-        super(props) // invokes React.Component's constructor
+        super(props)
 
         this.state = {
-          friends: ["Jordan", "May", "Jane"],
+          friends: {
+            active: ["Jordan", "May"],
+            inactive: ["Jane"]
+          },
           input: ""
         }
 
-        // bind the this keyword to the app instance
-        // so that when this function is invoked when the 'Remove' button is clicked
-        // the `this` is still correct, not props
         this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
 
         this.updateInput = this.updateInput.bind(this)
+        this.addFriendButtonEnabled = this.addFriendButtonEnabled.bind(this)
         this.handleAddFriend = this.handleAddFriend.bind(this)
+
+        this.handleClearFriends = this.handleClearFriends.bind(this)
+
+        this.handleDeactivateFriend = this.handleDeactivateFriend.bind(this)
+        this.handleReactivateFriend = this.handleReactivateFriend.bind(this)
+      }
+
+      handleClearFriends() {
+        this.setState({
+          friends: {active: [], inactive: []}
+        })
       }
 
       handleAddFriend() {
         this.setState((currentState) => {
           return {
-            friends: currentState.friends.concat([currentState.input]),
-          // .concat instead of .push so we don't want to modify the state directly
+            friends: {
+              ...currentState.friends,
+              active: currentState.friends.active.concat([currentState.input])
+            },
             input: ""
           }
         })
@@ -55,9 +81,35 @@
 
       handleRemoveFriend(name) {
         this.setState((currentState) => {
-          // object returned will be merged into currentState
           return {
-            friends: currentState.friends.filter((friend) => friend !== name)
+            friends: {
+              ...currentState.friends,
+              active: currentState.friends.active.filter((friend) => friend !== name)
+            }
+          }
+        })
+      }
+
+      handleDeactivateFriend(name) {
+        this.setState((currentState) => {
+          return {
+            friends: {
+              ...currentState.friends,
+              active: currentState.friends.active.filter((friend) => friend !== name),
+              inactive: currentState.friends.inactive.concat([name]),
+            }
+          }
+        })
+      }
+
+      handleReactivateFriend(name) {
+        this.setState((currentState) => {
+          return {
+            friends: {
+              ...currentState.friends,
+              active: currentState.friends.active.concat([name]),
+              inactive: currentState.friends.inactive.filter((friend) => friend !== name)
+            }
           }
         })
       }
@@ -65,11 +117,13 @@
       updateInput(e) {
         const value = e.target.value
 
-        // this can be just an object instead of setState((currentState)...)
-        // because we're not changing things based on the previous/current state
         this.setState({
           input: value
         })
+      }
+
+      addFriendButtonEnabled() {
+        return this.state.input !== ""
       }
 
       render() {
@@ -81,11 +135,33 @@
               value={this.state.input}
               onChange={this.updateInput}
             />
-            <button onClick={this.handleAddFriend}>Submit</button>
-            <FriendsList
-              list={this.state.friends}
-              onRemoveFriend={this.handleRemoveFriend}
-            />
+            <button
+              onClick={this.handleAddFriend}
+              disabled={!this.addFriendButtonEnabled()}
+            >
+              Submit
+            </button>
+
+            <div>
+              <button onClick={this.handleClearFriends}>Clear All</button>
+            </div>
+
+            <div>
+              <h2>Active Friends</h2>
+              <FriendsList
+                list={this.state.friends.active}
+                onRemoveFriend={this.handleRemoveFriend}
+                onDeactivateFriend={this.handleDeactivateFriend}
+              />
+            </div>
+
+            <div>
+              <h2>Inactive Friends</h2>
+              <FriendsList
+                list={this.state.friends.inactive}
+                onReactivateFriend={this.handleReactivateFriend}
+              />
+            </div>
           </div>
         )
       }
