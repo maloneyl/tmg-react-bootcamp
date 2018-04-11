@@ -15,7 +15,10 @@
         <ul>
           {props.list.map((name) => (
             <li key={name}>
-              {name}
+              <span>{name}</span>
+              <button onClick={() => props.onRemoveFriend(name)}>
+                Remove
+              </button>
             </li>
           ))}
         </ul>
@@ -29,12 +32,32 @@
         this.state = {
           friends: ["Jordan", "May", "Jane"]
         }
+
+        // bind the this keyword to the app instance
+        // so that when this function is invoked when the 'Remove' button is clicked
+        // the `this` is still correct, not props
+        this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
+      }
+
+      handleAddFriend() {
+      }
+
+      handleRemoveFriend(name) {
+        this.setState((currentState) => {
+          // object returned will be merged into currentState
+          return {
+            friends: currentState.friends.filter((friend) => friend !== name)
+          }
+        })
       }
 
       render() {
         return (
           <div>
-            <FriendsList list={this.state.friends} />
+            <FriendsList
+              list={this.state.friends}
+              onRemoveFriend={this.handleRemoveFriend}
+            />
           </div>
         )
       }
