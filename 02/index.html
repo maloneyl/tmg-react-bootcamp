@@ -10,7 +10,7 @@
   <div id="app"></div>
 
   <script type="text/babel">
-    function FriendsList (props) {
+    function FriendsList (props) { // functional component, stateless
       return (
         <ul>
           {props.list.map((name) => (
@@ -22,14 +22,22 @@
       )
     }
 
-    function App () {
-      const friends = ["Jordan", "May", "Jane"]
+    class App extends React.Component { // class component, so you can have state (local)
+      constructor(props) {
+        super(props) // invokes React.Component's constructor
 
-      return (
-        <div>
-          <FriendsList list={friends} />
-        </div>
-      )
+        this.state = {
+          friends: ["Jordan", "May", "Jane"]
+        }
+      }
+
+      render() {
+        return (
+          <div>
+            <FriendsList list={this.state.friends} />
+          </div>
+        )
+      }
     }
 
     ReactDOM.render(
