@@ -30,16 +30,27 @@
         super(props) // invokes React.Component's constructor
 
         this.state = {
-          friends: ["Jordan", "May", "Jane"]
+          friends: ["Jordan", "May", "Jane"],
+          input: ""
         }
 
         // bind the this keyword to the app instance
         // so that when this function is invoked when the 'Remove' button is clicked
         // the `this` is still correct, not props
         this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
+
+        this.updateInput = this.updateInput.bind(this)
+        this.handleAddFriend = this.handleAddFriend.bind(this)
       }
 
       handleAddFriend() {
+        this.setState((currentState) => {
+          return {
+            friends: currentState.friends.concat([currentState.input]),
+          // .concat instead of .push so we don't want to modify the state directly
+            input: ""
+          }
+        })
       }
 
       handleRemoveFriend(name) {
@@ -51,9 +62,26 @@
         })
       }
 
+      updateInput(e) {
+        const value = e.target.value
+
+        // this can be just an object instead of setState((currentState)...)
+        // because we're not changing things based on the previous/current state
+        this.setState({
+          input: value
+        })
+      }
+
       render() {
         return (
           <div>
+            <input
+              type="text"
+              placeholder="new friend"
+              value={this.state.input}
+              onChange={this.updateInput}
+            />
+            <button onClick={this.handleAddFriend}>Submit</button>
             <FriendsList
               list={this.state.friends}
               onRemoveFriend={this.handleRemoveFriend}
