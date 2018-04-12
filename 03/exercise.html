@@ -65,6 +65,7 @@
           {props.languages.map((language) => (
             <li key={language}>
               {language}
+              <button onClick={() => props.onLanguageSelection(language)}>Select</button>
             </li>
           ))}
         </ul>
@@ -90,18 +91,41 @@
         this.state = {
           loading: true,
           languages: ['all', 'javascript', 'ruby', 'python'],
+          selected_language: 'all',
           repos: []
         }
+
+        this.fetchRepos = this.fetchRepos.bind(this)
+        this.handleLanguageSelection = this.handleLanguageSelection.bind(this)
       }
 
       componentDidMount() {
-        API.fetchPopularRepos('all').
+        this.fetchRepos(this.state.selected_language)
+      }
+
+      componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.state.selected_language !== prevState.selected_language) {
+          this.fetchRepos(this.state.selected_language)
+        }
+      }
+
+      fetchRepos(language) {
+        this.setState({
+          repos: [],
+          loading: true
+        })
+
+        window.API.fetchPopularRepos(language).
           then((popularRepos) => {
             this.setState({
               repos: popularRepos,
               loading: false
             })
           })
+      }
+
+      handleLanguageSelection(language) {
+        this.setState({ selected_language: language })
       }
 
       render() {
@@ -111,7 +135,10 @@
 
         return (
           <div>
-            <Languages languages={this.state.languages} />
+            <Languages
+              languages={this.state.languages}
+              onLanguageSelection={this.handleLanguageSelection}
+            />
             <Repos repos={this.state.repos} />
           </div>
         )
