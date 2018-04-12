@@ -59,6 +59,30 @@
       }
     }
 
+    function Languages(props) {
+      return (
+        <ul>
+          {props.languages.map((language) => (
+            <li key={language}>
+              {language}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    function Repos(props) {
+      return (
+        <ul>
+          {props.repos.map((repo) => (
+            <li key={repo.id}>
+              {repo.name}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
     class App extends React.Component {
       constructor(props) {
         super(props);
@@ -85,29 +109,12 @@
           return <Loading />
         }
 
-        // to render more than one element you need to return an array
-        // otherwise: 'Adjacent JSX elements must be wrapped in an enclosing tag'
-        return [
+        return (
           <div>
-            <ul>
-              {this.state.languages.map((language) => (
-                <li key={language}>
-                  {language}
-                </li>
-              ))}
-            </ul>
-          </div>,
-
-          <div>
-            <ul>
-              {this.state.repos.map((repo) => (
-                <li key={repo.id}>
-                  {repo.name}
-                </li>
-              ))}
-            </ul>
+            <Languages languages={this.state.languages} />
+            <Repos repos={this.state.repos} />
           </div>
-        ]
+        )
       }
     }
 
