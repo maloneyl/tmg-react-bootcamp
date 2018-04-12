@@ -22,6 +22,7 @@ https://www.youtube.com/watch?v=NHfRLQuHjsU
 * Functional Components
 
 Day 3, Wednesday, April 11th:
+https://www.youtube.com/watch?v=Xa3DGGP4mLM
 * Lifecycle Events
 * componentDidMount
 * componentWillUnmount
