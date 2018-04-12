@@ -60,12 +60,54 @@
     }
 
     class App extends React.Component {
-      render() {
-        return (
-          <div>
+      constructor(props) {
+        super(props);
 
+        this.state = {
+          loading: true,
+          languages: ['all', 'javascript', 'ruby', 'python'],
+          repos: []
+        }
+      }
+
+      componentDidMount() {
+        API.fetchPopularRepos('all').
+          then((popularRepos) => {
+            this.setState({
+              repos: popularRepos,
+              loading: false
+            })
+          })
+      }
+
+      render() {
+        if (this.state.loading === true) {
+          return <Loading />
+        }
+
+        // to render more than one element you need to return an array
+        // otherwise: 'Adjacent JSX elements must be wrapped in an enclosing tag'
+        return [
+          <div>
+            <ul>
+              {this.state.languages.map((language) => (
+                <li key={language}>
+                  {language}
+                </li>
+              ))}
+            </ul>
+          </div>,
+
+          <div>
+            <ul>
+              {this.state.repos.map((repo) => (
+                <li key={repo.id}>
+                  {repo.name}
+                </li>
+              ))}
+            </ul>
           </div>
-        )
+        ]
       }
     }
 
