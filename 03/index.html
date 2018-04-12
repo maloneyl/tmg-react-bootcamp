@@ -9,6 +9,31 @@
 <body>
   <div id="app"></div>
 
+  <script>
+    window.API = { // fake an API call
+      fetchFriends() {
+        return new Promise((resolve, reject) => {
+          const friends = [
+            {
+              name: 'Jordan',
+              active: true
+            },
+            {
+              name: 'May',
+              active: true
+            },
+            {
+              name: 'Jane',
+              active: false
+            }
+          ]
+
+          setTimeout(() => resolve(friends), 200)
+        })
+      }
+    }
+  </script>
+
   <script type="text/babel">
     function ActiveFriends(props) {
       return (
@@ -75,21 +100,9 @@
         super(props)
 
         this.state = {
-          friends: [
-            {
-              name: 'Jordan',
-              active: true
-            },
-            {
-              name: 'May',
-              active: true
-            },
-            {
-              name: 'Jane',
-              active: false
-            }
-          ],
-          input: ''
+          friends: [],
+          input: '',
+          loading: true
         }
 
         this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
@@ -105,6 +118,15 @@
 
       componentDidMount() {
         console.log('--componentDidMount--')
+        // recommended place to do AJAX requests
+
+        API.fetchFriends()
+          .then((friends) => {
+            this.setState({
+              friends,
+              loading: false
+            })
+          })
       }
 
       componentDidUpdate() {
@@ -164,6 +186,10 @@
 
       render() {
         console.log('--render--')
+
+        if (this.state.loading === true) {
+          return <h2>Loading</h2>
+        }
 
         return (
           <div>
