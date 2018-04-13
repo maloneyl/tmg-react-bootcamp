@@ -133,15 +133,19 @@
       }
 
       render() {
-        if (this.state.loading === true) {
-          return <Loading />
-        }
-
         return (
           <div>
             <Nav onLanguageSelection={this.handleSelectLanguage} />
-            <h2>Active Language: {this.state.activeLanguage}</h2>
-            <Repos repos={this.state.repos} />
+
+            {this.state.loading === true
+              ? <Loading />
+              : <div>
+                  <h1 style={{textAlign: 'center'}}>
+                    {this.state.activeLanguage}
+                  </h1>
+                  {JSON.stringify(this.state.repos)}
+                </div>
+            }
           </div>
         )
       }
