@@ -34,6 +34,7 @@ https://www.youtube.com/watch?v=Xa3DGGP4mLM
 * Dynamic Rendering
 
 Day 4, Thursday, April 12th:
+https://www.youtube.com/watch?v=alZur1g2Cnw
 * Webpack
 * Configuration
 * HTMLWebpackPluginConfig
