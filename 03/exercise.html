@@ -59,16 +59,21 @@
       }
     }
 
-    function Languages(props) {
+    function Nav(props) {
+      const languages = ['all', 'javascript', 'ruby', 'python']
+
       return (
-        <ul>
-          {props.languages.map((language) => (
-            <li key={language}>
-              {language}
-              <button onClick={() => props.onLanguageSelection(language)}>Select</button>
-            </li>
-          ))}
-        </ul>
+        <nav>
+          <ul>
+            {languages.map((language) => (
+              <li key={language}>
+                <a href="#" onClick={() => props.onLanguageSelection(language)}>
+                  {language}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       )
     }
 
@@ -90,22 +95,21 @@
 
         this.state = {
           loading: true,
-          languages: ['all', 'javascript', 'ruby', 'python'],
-          selected_language: 'all',
+          activeLanguage: 'all',
           repos: []
         }
 
         this.fetchRepos = this.fetchRepos.bind(this)
-        this.handleLanguageSelection = this.handleLanguageSelection.bind(this)
+        this.handleSelectLanguage = this.handleSelectLanguage.bind(this)
       }
 
       componentDidMount() {
-        this.fetchRepos(this.state.selected_language)
+        this.fetchRepos(this.state.activeLanguage)
       }
 
       componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.state.selected_language !== prevState.selected_language) {
-          this.fetchRepos(this.state.selected_language)
+        if (this.state.activeLanguage !== prevState.activeLanguage) {
+          this.fetchRepos(this.state.activeLanguage)
         }
       }
 
@@ -124,8 +128,8 @@
           })
       }
 
-      handleLanguageSelection(language) {
-        this.setState({ selected_language: language })
+      handleSelectLanguage(language) {
+        this.setState({ activeLanguage: language })
       }
 
       render() {
@@ -135,10 +139,8 @@
 
         return (
           <div>
-            <Languages
-              languages={this.state.languages}
-              onLanguageSelection={this.handleLanguageSelection}
-            />
+            <Nav onLanguageSelection={this.handleSelectLanguage} />
+            <h2>Active Language: {this.state.activeLanguage}</h2>
             <Repos repos={this.state.repos} />
           </div>
         )
